@@ -1,0 +1,27 @@
+{
+	"menu": {
+		"items": [
+		  {              
+		   "name": "Приборы",
+           "action": "devices",
+           "childs": [ ]  
+		  },
+          {
+           "name": "Пациенты",
+           "action": "patients",
+           "childs": []
+          }
+		]
+	},
+    
+    "patiens" : {
+        "ui" : [
+            
+        ]        
+    }
+}
+
+
+
+
+
