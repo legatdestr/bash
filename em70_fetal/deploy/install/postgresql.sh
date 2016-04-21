@@ -5,21 +5,28 @@ function initPostgreSQL () {
   local dbDataDir='/var/lib/pgsql/9.5/data';
 
   [ "$(ls -A ${dbDataDir})" ] && warning "PostgreSQL data directory is exists and not empty!" || /usr/pgsql-9.5/bin/postgresql95-setup initdb ;
-  # автозапуск:
-  chkconfig postgresql-9.5 on;
-  # старт сервиса:
-  service postgresql-9.5 start;
-  service postgresql-9.5 restart;
 
   echo "
-host    all             all             127.0.0.1/32            md5
-local   all             all                                     md5
-local   all             all             ::1                     md5
+local   all         postgres                          ident
+local   all         all                               md5
+host    all         all         127.0.0.1/32          md5
+host    all         all         ::1/128               md5
 " > /var/lib/pgsql/9.5/data/pg_hba.conf ;
    sudo -u postgres psql -d template1 -h localhost -c "ALTER USER postgres WITH PASSWORD '${C_DB_POSTGRES_USER_PASSWORD}';"
    # Создание пользователя elecard
    sudo -u postgres psql -d template1 -h localhost -c "CREATE USER ${C_DB_USER_ADMIN} WITH password '${C_DB_USER_PASSWORD}' createdb createuser;"
    info 'Создан пользователь elecard';
+
+   sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" /var/lib/pgsql/9.5/data/postgresql.conf;
+
+   info 'Разрешаем pgsql принимать коннекты по сети: ред.  /var/lib/pgsql/9.5/data/postgresql.conf';
+
+   # автозапуск:
+   chkconfig postgresql-9.5 on;
+   # старт сервиса:
+   service postgresql-9.5 start;
+   service postgresql-9.5 restart;
+
 }
 
 function installPostgreSQL () {
