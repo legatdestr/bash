@@ -38,9 +38,8 @@ if [ -n "${C_PROXY_URI}" ]; then
     info 'Настройка proxy';
 
     if ! grep -Fxq "${C_PROXY_STRING}" '/etc/yum.conf' ; then
-      info 'Настраиваем прокси для yum';
-      # code if not found
       echo "${C_PROXY_STRING}" >> '/etc/yum.conf' ;
+      process_step 'Установка PROXY для yum';
     fi ;
 
     export http_proxy="${C_PROXY_STRING}";
@@ -48,14 +47,14 @@ if [ -n "${C_PROXY_URI}" ]; then
     touch ~/.curlrc;
 
     if ! grep -Fxq "proxy=${C_PROXY_URI}" ~/.curlrc ; then
-    # code if not found
-      info 'Настраиваем прокси для curl';
       echo "proxy=${C_PROXY_URI}" >> ~/.curlrc;
+      process_step 'Установка PROXY для curl';
     fi ;
 
 else
     info 'Proxy не установлен';
 fi;
+
 
 
 if  ! isPackageInstalled 'httpd' ; then
