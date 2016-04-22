@@ -4,6 +4,7 @@ TIME=$(date +%s);
 
 C_CONFIG_FILE_PATH='../config.cfg';
 C_LIB_DIR="../lib";
+C_INSTALLATION_DIR='installAllEnvironment';
 
 # Файл конфигурации
 source "${C_CONFIG_FILE_PATH}";
@@ -56,10 +57,25 @@ else
 fi;
 
 
+##########################################################################
+
+source "${__dir}"/"${C_INSTALLATION_DIR}/postgresql.sh";
+
+if  ! isPackageInstalled 'postgresql*-server'; then
+  PrintPackageNotInstalled 'postgresql*-server';
+  installPostgreSQL;
+  initPostgreSQL;
+else
+  PrintPackageInstalled 'postgresql*-server';
+  initPostgreSQL;
+fi;
+
+exit 0;
+##########################################################################
 
 if  ! isPackageInstalled 'httpd' ; then
   PrintPackageNotInstalled 'Apache';
-  source "${__dir}"/"install/apache.sh";
+  source "${__dir}"/"${C_INSTALLATION_DIR}/apache.sh";
   installApache;
 else
   PrintPackageInstalled 'Apache';
@@ -68,7 +84,7 @@ fi;
 
 if ! isPackageInstalled 'php5*'; then
   PrintPackageNotInstalled 'php5*';
-  source "${__dir}"/"install/php.sh";
+  source "${__dir}"/"${C_INSTALLATION_DIR}/php.sh";
   installPhp5 ;
 else
   PrintPackageInstalled 'php5';
@@ -77,7 +93,7 @@ fi;
 
 if ! isPackageInstalled 'git'; then
   PrintPackageNotInstalled 'git';
-  source "${__dir}"/"install/git.sh";
+  source "${__dir}"/"${C_INSTALLATION_DIR}/git.sh";
   installGit ;
 else
   PrintPackageInstalled 'git';
@@ -85,7 +101,7 @@ fi;
 
 if ! isPackageInstalled 'wget'; then
   PrintPackageNotInstalled 'wget';
-  source "${__dir}"/"install/wget.sh";
+  source "${__dir}"/"${C_INSTALLATION_DIR}/wget.sh";
   installWget ;
 else
   PrintPackageInstalled 'wget';
@@ -94,7 +110,7 @@ fi;
 
 if ! isPackageInstalled 'nodejs'; then
   PrintPackageNotInstalled 'nodejs';
-  source "${__dir}"/"install/nodejs.sh";
+  source "${__dir}"/"${C_INSTALLATION_DIR}/nodejs.sh";
   installNodejs ;
 else
   PrintPackageInstalled 'nodejs';
@@ -104,7 +120,7 @@ fi;
 
 if command -v composer >/dev/null 2>&1 ; then
   PrintPackageNotInstalled 'composer';
-  source "${__dir}"/"install/composer.sh";
+  source "${__dir}"/"${C_INSTALLATION_DIR}/composer.sh";
   installComposer ;
 else
   PrintPackageInstalled  'composer';
@@ -113,18 +129,20 @@ fi;
 
 if ! hash ember 2>/dev/null ; then
   PrintPackageNotInstalled 'ember-cli';
-  source "${__dir}"/"install/ember-cli.sh";
+  source "${__dir}"/"${C_INSTALLATION_DIR}/ember-cli.sh";
   installEmberCli ;
 else
   PrintPackageInstalled  'ember-cli';
 fi;
 
+source "${__dir}"/"${C_INSTALLATION_DIR}/postgresql.sh";
 if  ! isPackageInstalled 'postgresql*-server'; then
   PrintPackageNotInstalled 'postgresql*-server';
-  source "${__dir}"/"install/postgresql.sh";
   installPostgreSQL;
+  initPostgreSQL;
 else
   PrintPackageInstalled 'postgresql*-server';
+  initPostgreSQL;
 fi;
 
 

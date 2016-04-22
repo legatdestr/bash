@@ -1,27 +1,34 @@
 #!/bin/bash
 
+
 function initPostgreSQL () {
 
   local dbDataDir='/var/lib/pgsql/9.5/data';
 
-  [ "$(ls -A ${dbDataDir})" ] && warning "PostgreSQL data directory is exists and not empty!" || /usr/pgsql-9.5/bin/postgresql95-setup initdb ;
+  if [ "$(ls -A ${dbDataDir})" ] ; then
+     warning "PostgreSQL data directory не пуста (Бд уже проинициализирована)!";
+   else
+     /usr/pgsql-9.5/bin/postgresql95-setup initdb ;
+     process_step 'Инициализация БД';
+  fi;
 
   chkconfig postgresql-9.5 on;
   process_step 'Автозапуск сервиса postgresql-9.5.service';
   /bin/systemctl stop postgresql-9.5.service;
   process_step 'Стоп сервиса postgresql-9.5.service';
 
-  echo "
+  if ! grep -Fxq 'host    all         all         10.10.0.0/24          md5' /var/lib/pgsql/9.5/data/pg_hba.conf ; then
+    echo "
 local   all         postgres                          peer
 local   all         all                               peer
-host    all         all         127.0.0.1/32          md5
-host    all         all         ::1/128               md5
-" > /var/lib/pgsql/9.5/data/pg_hba.conf ;
+host    all         all               0.0.0.0/0       md5
 
-process_step 'Создание настроек доступа в файле pg_hba.conf';
+  " > /var/lib/pgsql/9.5/data/pg_hba.conf ;
+  process_step 'Создание настроек доступа в файле pg_hba.conf. Файл перезаписывается.';
+  fi ;
 
-sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" /var/lib/pgsql/9.5/data/postgresql.conf;
-process_step 'Разрешаем pgsql принимать коннекты по сети: ред. файл: /var/lib/pgsql/9.5/data/postgresql.conf';
+    sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" /var/lib/pgsql/9.5/data/postgresql.conf;
+    process_step 'Разрешаем pgsql принимать коннекты по сети: ред. файл: /var/lib/pgsql/9.5/data/postgresql.conf';
 
    /bin/systemctl start postgresql-9.5.service;
    process_step 'Старт сервиса postgresql-9.5.service';
@@ -30,7 +37,7 @@ process_step 'Разрешаем pgsql принимать коннекты по 
    process_step 'Задание пароля пользователю postgres';
 
    # Создание пользователя elecard
-   sudo -u postgres psql -c "DROP USER  IF EXISTS  name ${C_DB_USER_ADMIN};";
+   sudo -u postgres psql -c "DROP USER  IF EXISTS ${C_DB_USER_ADMIN};";
    process_step 'Удаление пользователя '"${C_DB_USER_ADMIN}"' если он существует';
    sudo -u postgres psql -c "CREATE USER ${C_DB_USER_ADMIN} WITH password '${C_DB_USER_PASSWORD}' createdb createuser login;";
    process_step 'Создание пользователя '"${C_DB_USER_ADMIN}";
@@ -38,6 +45,7 @@ process_step 'Разрешаем pgsql принимать коннекты по 
    info 'Перезапуск сервиса postgresql-9.5.service';
    /bin/systemctl restart postgresql-9.5.service; # service postgresql-9.5 start;
 
+   process_step 'Инициализация БД';
 }
 
 function installPostgreSQL () {
@@ -74,6 +82,5 @@ function installPostgreSQL () {
     PrintPackageInstalled 'postgresql-contrib';
   fi;
 
-  initPostgreSQL;
   info 'Бд установлена';
 }
