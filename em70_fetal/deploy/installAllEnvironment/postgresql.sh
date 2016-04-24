@@ -36,14 +36,16 @@ host    all         all               0.0.0.0/0       md5
    sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '${C_DB_POSTGRES_USER_PASSWORD}';"
    process_step 'Задание пароля пользователю postgres';
 
-   # Создание пользователя elecard
-   sudo -u postgres psql -c "DROP USER  IF EXISTS ${C_DB_USER_ADMIN};";
-   process_step 'Удаление пользователя '"${C_DB_USER_ADMIN}"' если он существует';
-   sudo -u postgres psql -c "CREATE USER ${C_DB_USER_ADMIN} WITH password '${C_DB_USER_PASSWORD}' createdb createuser login;";
-   process_step 'Создание пользователя '"${C_DB_USER_ADMIN}";
+  # Создание пользователя elecard
+  if sudo -u postgres psql -tAc "SELECT 1 FROM pg_roles WHERE rolname='${C_DB_USER_ADMIN}'; " | grep -q 1 ; then
+      process_step 'Пользователь '"${C_DB_USER_ADMIN}"' уже существует. Не трогаем.';
+    else
+      sudo -u postgres psql -c "CREATE USER ${C_DB_USER_ADMIN} WITH password '${C_DB_USER_PASSWORD}' createdb createuser login;";
+      process_step 'Создание пользователя: '"${C_DB_USER_ADMIN}";
+  fi;
 
-   info 'Перезапуск сервиса postgresql-9.5.service';
    /bin/systemctl restart postgresql-9.5.service; # service postgresql-9.5 start;
+   process_step 'Перезапуск сервиса postgresql-9.5.service';
 
    process_step 'Инициализация БД';
 }

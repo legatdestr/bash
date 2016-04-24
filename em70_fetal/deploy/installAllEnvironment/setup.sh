@@ -31,47 +31,11 @@ trap exit ERR;
 
 # ==================================MAIN========================================
 # Выходим если не админ
-
 regectIfNoRights ;
 
 # Proxy
-if [ -n "${C_PROXY_URI}" ]; then
-    info 'Настройка proxy';
+source "${C_LIB_DIR}/proxy.sh";
 
-    if ! grep -Fxq "${C_PROXY_STRING}" '/etc/yum.conf' ; then
-      echo "${C_PROXY_STRING}" >> '/etc/yum.conf' ;
-      process_step 'Установка PROXY для yum';
-    fi ;
-
-    export http_proxy="${C_PROXY_STRING}";
-    export https_proxy="${C_PROXY_STRING}";
-    touch ~/.curlrc;
-
-    if ! grep -Fxq "proxy=${C_PROXY_URI}" ~/.curlrc ; then
-      echo "proxy=${C_PROXY_URI}" >> ~/.curlrc;
-      process_step 'Установка PROXY для curl';
-    fi ;
-
-else
-    info 'Proxy не установлен';
-fi;
-
-
-##########################################################################
-
-source "${__dir}"/"${C_INSTALLATION_DIR}/postgresql.sh";
-
-if  ! isPackageInstalled 'postgresql*-server'; then
-  PrintPackageNotInstalled 'postgresql*-server';
-  installPostgreSQL;
-  initPostgreSQL;
-else
-  PrintPackageInstalled 'postgresql*-server';
-  initPostgreSQL;
-fi;
-
-exit 0;
-##########################################################################
 
 if  ! isPackageInstalled 'httpd' ; then
   PrintPackageNotInstalled 'Apache';
