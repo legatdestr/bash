@@ -33,8 +33,10 @@ trap exit ERR;
 # Выходим если не админ
 regectIfNoRights ;
 
-# Proxy
-source "${C_LIB_DIR}/proxy.sh";
+# Системные Proxy
+source "${C_LIB_DIR}/proxyAdmin.sh";
+# Прокси текущего пользователя
+source "${C_LIB_DIR}/proxyUser.sh";
 
 
 if  ! isPackageInstalled 'httpd' ; then

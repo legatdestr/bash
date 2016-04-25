@@ -4,13 +4,22 @@ TIME=$(date +%s);
 
 C_CONFIG_FILE_PATH='../config.cfg';
 C_LIB_DIR="../lib";
+C_INSTALLATION_DIR='installAllEnvironment';
+
 
 # Файл конфигурации
 source "${C_CONFIG_FILE_PATH}";
-[[ $? -ne 0  ]] && echo "Ошибка подключения файла конфигурации: ${C_CONFIG_FILE_PATH}" && exit 1;
+if [[ $? -ne 0  ]]; then
+  echo "Ошибка подключения файла конфигурации: ${C_CONFIG_FILE_PATH}";
+  exit 1;
+fi;
 
 # Общие функции
 source "${C_LIB_DIR}"/"common.sh";
+if [[ $? -ne 0  ]] ; then
+   echo "Ошибка подключения библиотеки: ${C_LIB_DIR}/common.sh";
+   exit 1;
+fi;
 process_step 'Подключение библиотеки функций - common.sh';
 
 # Вызывается при завершении работы скрипта.
@@ -30,29 +39,28 @@ trap exit ERR;
 
 # ==================================MAIN========================================
 
+# Установка прокси текущего пользователя
+source "${C_LIB_DIR}/proxyUser.sh";
+# Модули установки:#
+#     Репозиторий.
+#        Проверить, выгружен ли он? Если нет выгрузить, создать файл git_revision.txt
+#        записать туда текущую ревизию.
+#     инструмент миграции. Подтянуть зависимости, проверить наличие БД пакетов, если надо.
+#     API, проверяем глобальные зависимости PHP, composer, подтягиваем локальные зависимости
+#     SPA,  глобальные зависисмости NodeJs, Ember-cli, подтягиваем локальные зависимости
+#     chart, проверяем глобальные
+#
+#
+# проверить что все установлено:
+#   пакет GIT
+#   БД, пакет БД установлен, есть доступ в БД на уровне пользователя (elecard)
+#   Apache
+#   PHP
+#   composer
+#   ember-cli
 
-regectIfNoRights ;
 
-# Proxy
-if [ -n "${C_PROXY_URI}" ]; then
-    info 'Настройка proxy';
-
-    if ! grep -Fxq "${C_PROXY_STRING}" '/etc/yum.conf' ; then
-      info 'Настраиваем прокси для yum';
-      # code if not found
-      echo "${C_PROXY_STRING}" >> '/etc/yum.conf' ;
-    fi ;
-
-    export http_proxy="${C_PROXY_STRING}";
-    export https_proxy="${C_PROXY_STRING}";
-    touch ~/.curlrc;
-
-    if ! grep -Fxq "proxy=${C_PROXY_URI}" ~/.curlrc ; then
-    # code if not found
-      info 'Настраиваем прокси для curl';
-      echo "proxy=${C_PROXY_URI}" >> ~/.curlrc;
-    fi ;
-
-else
-    info 'Proxy не установлен';
-fi;
+source "./repository.sh";
+source "${__dir}/deploy/spa.sh";
+source "${__dir}/deploy/api.sh";
+source "${__dir}/deploy/migration_setup.sh";
