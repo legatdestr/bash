@@ -106,3 +106,21 @@ function PrintPackageInstalled () {
 function PrintPackageNotInstalled () {
   warning "Пакет ${1} не установлен.";
 }
+
+
+function isUserGroupExists () {
+  if egrep -i "^$1" /etc/group >/dev/null 2>&1; then
+    true;
+  else
+    false;
+  fi;
+}
+
+
+function isUserExists () {
+  if id "$1" >/dev/null 2>&1; then
+      true;
+  else
+      false;
+  fi;
+}

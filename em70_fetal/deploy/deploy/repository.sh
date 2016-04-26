@@ -6,8 +6,6 @@ function runRepositoryModule(){
   if ! isPackageInstalled 'git'; then
     PrintPackageNotInstalled 'git';
   else
-    # пакет GIT умтановлен.
-    echo "${C_GIT_CLONE_DIR}";
      if [ ! -d "${C_GIT_CLONE_DIR}" ]; then
        # Директория репозитория не создана
        mkdir -p "${C_GIT_CLONE_DIR}";

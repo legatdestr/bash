@@ -82,16 +82,13 @@ else
   PrintPackageInstalled 'nodejs';
 fi;
 
-
-
-if command -v composer >/dev/null 2>&1 ; then
-  PrintPackageNotInstalled 'composer';
-  source "${__dir}"/"${C_INSTALLATION_DIR}/composer.sh";
-  installComposer ;
+if ! command -v bower >/dev/null 2>&1 ; then
+  PrintPackageNotInstalled 'bower';
+  source "${__dir}"/"${C_INSTALLATION_DIR}/bower.sh";
+  installBowerOnNodejs ;
 else
-  PrintPackageInstalled  'composer';
+  PrintPackageInstalled  'bower';
 fi;
-
 
 if ! hash ember 2>/dev/null ; then
   PrintPackageNotInstalled 'ember-cli';
@@ -100,6 +97,16 @@ if ! hash ember 2>/dev/null ; then
 else
   PrintPackageInstalled  'ember-cli';
 fi;
+
+
+if ! command -v composer >/dev/null 2>&1 ; then
+  PrintPackageNotInstalled 'composer';
+  source "${__dir}"/"${C_INSTALLATION_DIR}/composer.sh";
+  installComposer ;
+else
+  PrintPackageInstalled  'composer';
+fi;
+
 
 source "${__dir}"/"${C_INSTALLATION_DIR}/postgresql.sh";
 if  ! isPackageInstalled 'postgresql*-server'; then

@@ -2,9 +2,9 @@
 
 if [ -n "${C_PROXY_URI}" ]; then
     info 'Настройка proxy текущего пользователя (настройки считываются из config.cfg)';
-    
-    export http_proxy="${C_PROXY_STRING}";
-    export https_proxy="${C_PROXY_STRING}";
+
+    export http_proxy="${C_PROXY_URI}";
+    export https_proxy="${C_PROXY_URI}";
     process_step 'Установка сессионных переменных: http_proxy, https_proxy';
 
     touch ~/.curlrc;
