@@ -99,7 +99,8 @@ else
 fi;
 
 
-if ! command -v composer >/dev/null 2>&1 ; then
+#if ! command -v composer >/dev/null 2>&1 ; then
+if [ ! -f "/usr/local/bin/composer"] ; then
   PrintPackageNotInstalled 'composer';
   source "${__dir}"/"${C_INSTALLATION_DIR}/composer.sh";
   installComposer ;
@@ -118,5 +119,9 @@ else
   initPostgreSQL;
 fi;
 
-
+source "${__dir}"/"${C_INSTALLATION_DIR}/userRights.sh";
+createUserGroups ;
+createUser;
+setWebServerDocumentRootRights ;
+addApacheUserToFetalGroup;
 # ===============================END==MAIN======================================

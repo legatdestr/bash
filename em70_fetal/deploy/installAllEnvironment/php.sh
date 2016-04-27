@@ -19,6 +19,10 @@ function installPhp5 () {
 
   yum install php56w php56w-opcache php56w-common php56w-mbstring php56w-pdo php56w-pgsql php56w-pecl-memcache -y -y;
   process_step 'Установка PHP5';
+
+  sed -i "s#    DirectoryIndex index.html#    DirectoryIndex index.php index.html#g" /etc/httpd/conf/httpd.conf;
+  process_step 'Установка DirectoryIndex index.php index.html';
+
   service httpd restart;
   process_step 'Рестарт Apache (httpd)';
 }

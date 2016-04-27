@@ -104,7 +104,7 @@ function PrintPackageInstalled () {
 }
 
 function PrintPackageNotInstalled () {
-  warning "Пакет ${1} не установлен.";
+  warning "Пакет ${1} не установлен. Будет произведена попытка его установить...";
 }
 
 
