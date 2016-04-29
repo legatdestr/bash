@@ -6,7 +6,7 @@ function runMigrationSetup(){
       process_step 'Директория Миграций не верная : '"${C_GIT_MIGRATION_TOOL_DIR}";
     else
       cd "${C_GIT_MIGRATION_TOOL_DIR}";
-      php ~/composer.phar install;
+      composer install;
    fi;
 }
 
