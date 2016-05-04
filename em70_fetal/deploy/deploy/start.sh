@@ -63,5 +63,5 @@ source "${C_LIB_DIR}/proxyUser.sh";
 source "./repository.sh";
 source "${__dir}/deploy/spa.sh";
 
-#source "${__dir}/deploy/api.sh";
-#source "${__dir}/deploy/migration_setup.sh";
+source "${__dir}/deploy/api.sh";
+source "${__dir}/deploy/migration_setup.sh";

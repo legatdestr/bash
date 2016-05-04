@@ -10,7 +10,7 @@ function runRepositoryModule(){
        # Директория репозитория не создана
        mkdir -p "${C_GIT_CLONE_DIR}";
        process_step 'Создание директории репозитория: '"${C_GIT_CLONE_DIR}";
-       git clone  "${C_GIT_CLONE_STRING}" "${C_GIT_CLONE_DIR}" ;
+       git clone -q  "${C_GIT_CLONE_STRING}" "${C_GIT_CLONE_DIR}" ;
        process_step 'Клонирование репозитория';
      else
        # Директория репозитория существует

@@ -98,9 +98,8 @@ else
   PrintPackageInstalled  'ember-cli';
 fi;
 
-
-#if ! command -v composer >/dev/null 2>&1 ; then
-if [ ! -f "/usr/local/bin/composer"] ; then
+# if [ ! -f "/usr/local/bin/composer"] ; then
+if ! command -v composer >/dev/null 2>&1 ; then
   PrintPackageNotInstalled 'composer';
   source "${__dir}"/"${C_INSTALLATION_DIR}/composer.sh";
   installComposer ;
