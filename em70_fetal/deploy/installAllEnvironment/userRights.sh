@@ -5,7 +5,7 @@ function disableSeLinuxPermissionSystem () {
   if [ -f  '/etc/selinux/config' ] ; then 
       sed -i "s/SELINUX=enforcing/SELINUX=disabled/g" /etc/selinux/config;  
       process_step 'Отключение (если включена) системы контроля доступа SELinux';
-      shutdown -c 1>/dev/null ;
+      shutdown 2 -r 1>/dev/null ;
       critical 'Система будет перезагружена через 2 минуты!';
     else 
       info 'Файл конфигурации SELinux не найден. Изменения в системе SELinux не были сделаны';
