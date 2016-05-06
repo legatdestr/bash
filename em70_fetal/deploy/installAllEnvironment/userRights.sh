@@ -1,9 +1,20 @@
 #!/bin/bash
 
+
+function disableSeLinuxPermissionSystem () {
+  if [ -f  '/etc/selinux/config' ] ; then 
+      sed -i "s/SELINUX=enforcing/SELINUX=disabled/g" /etc/selinux/config;  
+      process_step 'Отключение (если включена) системы контроля доступа SELinux';
+      shutdown -c 1>/dev/null ;
+      critical 'Система будет перезагружена через 2 минуты!';
+    else 
+      info 'Файл конфигурации SELinux не найден. Изменения в системе SELinux не были сделаны';
+  fi;
+}
+
 function setWebServerDocumentRootRights () {
   chown -R "${C_DEPLOY_USER}:${C_DEPLOY_USER_GROUP}" /var/www;
   chmod -R g+rwxs /var/www;
-  chmod -R o+rx /var/www;
   process_step 'Установка прав на documentRoot';
 }
 

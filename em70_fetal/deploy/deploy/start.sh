@@ -29,7 +29,7 @@ function cleanup_before_exit () {
     alert "ОШИБКА. Что-то пошло не так.  Время выполнения: $(($(date +%s)-${TIME})) сек.";
     exit 1;
   else
-    notice $(echo -e "Работа скрипта завершена. Похоже все ОК. Время выполнения: $(($(date +%s)-${TIME})) сек.");
+    notice $(echo -e "Работа скрипта завершена. Время выполнения: $(($(date +%s)-${TIME})) сек.");
   fi;
 
 }
@@ -39,29 +39,10 @@ trap exit ERR;
 
 # ==================================MAIN========================================
 
-# Установка прокси текущего пользователя
 source "${C_LIB_DIR}/proxyUser.sh";
-# Модули установки:#
-#     Репозиторий.
-#        Проверить, выгружен ли он? Если нет выгрузить, создать файл git_revision.txt
-#        записать туда текущую ревизию.
-#     инструмент миграции. Подтянуть зависимости, проверить наличие БД пакетов, если надо.
-#     API, проверяем глобальные зависимости PHP, composer, подтягиваем локальные зависимости
-#     SPA,  глобальные зависисмости NodeJs, Ember-cli, подтягиваем локальные зависимости
-#     chart, проверяем глобальные
-#
-#
-# проверить что все установлено:
-#   пакет GIT
-#   БД, пакет БД установлен, есть доступ в БД на уровне пользователя (elecard)
-#   Apache
-#   PHP
-#   composer
-#   ember-cli
+source "./repository.sh" && runRepositoryModule;
+source "${__dir}/deploy/spa.sh" && runSpaModule;
+source "${__dir}/deploy/api.sh" && runApiModule;
+source "${__dir}/deploy/migration_setup.sh" && runMigrationModule;
 
-
-source "./repository.sh";
-source "${__dir}/deploy/spa.sh";
-
-source "${__dir}/deploy/api.sh";
-source "${__dir}/deploy/migration_setup.sh";
+# ================================END MAIN======================================

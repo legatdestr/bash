@@ -16,7 +16,7 @@ function runSpaModule(){
        bower install;
        process_step 'Подтягивание bower зависимостей для SPA';
        info 'Запуск построения SPA';
-       ember build --environment=production;
+       ember build --environment=test;
        process_step 'Построение SPA';
 
        if [[ ! -z "${C_SPA_DEPLOY_URL// }" ]]; then
@@ -31,5 +31,3 @@ function runSpaModule(){
      fi;
   fi;
 }
-
-runSpaModule;

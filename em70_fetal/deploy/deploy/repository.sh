@@ -23,5 +23,3 @@ function runRepositoryModule(){
      fi;
   fi;
 }
-
-runRepositoryModule;

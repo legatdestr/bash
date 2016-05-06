@@ -98,8 +98,8 @@ else
   PrintPackageInstalled  'ember-cli';
 fi;
 
-# if [ ! -f "/usr/local/bin/composer"] ; then
-if ! command -v composer >/dev/null 2>&1 ; then
+#if ! command -v composer >/dev/null 2>&1 ; then # так не  работает так как под рутом доступ через полный путь: /usr/local/bin/composer 
+if [ ! -f "/usr/local/bin/composer" ] ; then
   PrintPackageNotInstalled 'composer';
   source "${__dir}"/"${C_INSTALLATION_DIR}/composer.sh";
   installComposer ;
@@ -123,4 +123,5 @@ createUserGroups ;
 createUser;
 setWebServerDocumentRootRights ;
 addApacheUserToFetalGroup;
+disableSeLinuxPermissionSystem;
 # ===============================END==MAIN======================================
