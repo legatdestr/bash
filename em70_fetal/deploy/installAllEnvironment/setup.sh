@@ -118,10 +118,14 @@ else
   initPostgreSQL;
 fi;
 
+
+
 source "${__dir}"/"${C_INSTALLATION_DIR}/userRights.sh";
 createUserGroups ;
 createUser;
 setWebServerDocumentRootRights ;
 addApacheUserToFetalGroup;
 disableSeLinuxPermissionSystem;
+source "${__dir}"/"${C_INSTALLATION_DIR}/hostFile.sh";
+setupLocalhost;
 # ===============================END==MAIN======================================

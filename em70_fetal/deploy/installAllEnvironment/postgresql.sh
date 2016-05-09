@@ -22,8 +22,8 @@ function initPostgreSQL () {
 local   all         postgres                          peer
 local   all         all                               peer
 host    all         all               0.0.0.0/0       md5
-
-  " > /var/lib/pgsql/9.5/data/pg_hba.conf ;
+host    all         ${C_DB_USER_DEPLOY}           localhost      md5
+" > /var/lib/pgsql/9.5/data/pg_hba.conf ;
   process_step 'Создание настроек доступа в файле pg_hba.conf. Файл перезаписывается.';
   fi ;
 
@@ -36,13 +36,22 @@ host    all         all               0.0.0.0/0       md5
    sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '${C_DB_POSTGRES_USER_PASSWORD}';"
    process_step 'Задание пароля пользователю postgres';
 
-  # Создание пользователя elecard
+  # Создание пользователя admin
   if sudo -u postgres psql -tAc "SELECT 1 FROM pg_roles WHERE rolname='${C_DB_USER_ADMIN}'; " | grep -q 1 ; then
       process_step 'Пользователь '"${C_DB_USER_ADMIN}"' уже существует. Не трогаем.';
     else
       sudo -u postgres psql -c "CREATE USER ${C_DB_USER_ADMIN} WITH password '${C_DB_USER_PASSWORD}' createdb createuser login;";
       process_step 'Создание пользователя: '"${C_DB_USER_ADMIN}";
   fi;
+  
+  # Создание пользователя который деплоит
+  if sudo -u postgres psql -tAc "SELECT 1 FROM pg_roles WHERE rolname='${C_DB_USER_DEPLOY}'; " | grep -q 1 ; then
+      process_step 'Пользователь '"${C_DB_USER_DEPLOY}"' уже существует. Не трогаем.';
+    else
+      sudo -u postgres psql -c "CREATE USER ${C_DB_USER_DEPLOY} WITH password '${C_DB_USER_DEPLOY_PASSWORD}' createdb createuser login;";
+      process_step 'Создание пользователя который деплоит БД: '"${C_DB_USER_DEPLOY}";
+  fi;
+  
 
    /bin/systemctl restart postgresql-9.5.service; # service postgresql-9.5 start;
    process_step 'Перезапуск сервиса postgresql-9.5.service';

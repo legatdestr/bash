@@ -1,0 +1,16 @@
+{
+    "remotePath": "/home/deploy",
+    "host": "192.168.0.96",
+    "username": "deploy",
+    "password": "deploy",
+    "port": 22,
+    "protocol": "sftp",
+    "uploadOnSave": true,
+    "passive": false,
+    "debug": false,
+    "privateKeyPath": null,
+    "ignore": [
+        "\\.vscode",
+        "\\.git"
+    ]
+}
