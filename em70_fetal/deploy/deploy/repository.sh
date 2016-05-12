@@ -7,17 +7,19 @@ function runRepositoryModule(){
      if [ ! -d "${C_GIT_CLONE_DIR}" ]; then
        # Директория репозитория не создана
        mkdir -p "${C_GIT_CLONE_DIR}";
-       process_step 'Создание директории репозитория: '"${C_GIT_CLONE_DIR}";
-       info 'Клонируем репозиторий: ${C_GIT_CLONE_STRING}  ...';
+       process_step 'GIT. Создание директории репозитория: '"${C_GIT_CLONE_DIR}";
+       info 'GIT. Клонируем репозиторий: ${C_GIT_CLONE_STRING}  ...';
        git clone -q  "${C_GIT_CLONE_STRING}" "${C_GIT_CLONE_DIR}" ;
-       process_step 'Клонирование репозитория';
+       process_step 'GIT. Клонирование репозитория';
      else
        # Директория репозитория существует
        cd "${C_GIT_CLONE_DIR}";
-       process_step 'Смена текущей директории на директорию репозитория: '"${C_GIT_CLONE_DIR}";
-       git reset --hard HEAD;
+       process_step 'GIT. Смена текущей директории на директорию репозитория: '"${C_GIT_CLONE_DIR}";
+       git clean -f;
+       process_step 'GIT. Удаление не отслеживаемых файлов (если кто-то забыл правильно настроить .gitignore)';
+       git reset --hard HEAD ;
        git pull;
-       process_step 'Pull репозитория';
+       process_step 'GIT. Pull репозитория'; 
      fi;
   fi;
 }

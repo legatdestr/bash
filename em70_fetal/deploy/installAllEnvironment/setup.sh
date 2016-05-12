@@ -43,6 +43,7 @@ if  ! isPackageInstalled 'httpd' ; then
   PrintPackageNotInstalled 'Apache';
   source "${__dir}"/"${C_INSTALLATION_DIR}/apache.sh";
   installApache;
+  apacheEnableModRewrite;
 else
   PrintPackageInstalled 'Apache';
 fi;

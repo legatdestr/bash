@@ -21,13 +21,15 @@ function runSpaModule(){
 
        if [[ ! -z "${C_SPA_DEPLOY_URL// }" ]]; then
          sed -i "s#<base href=".*">#<base href='${C_SPA_DEPLOY_URL}' />#g" "${C_GIT_SPA_DIR}"/dist/index.html;
-         process_step 'Задаем base_href';
+         process_step 'SPA. Задаем base_href';
        else
-         notice 'base_href не был изменен - C_SPA_DEPLOY_URL не задан';
+         notice 'SPA. base_href не был изменен - C_SPA_DEPLOY_URL не задан';
        fi;
 
        rm -rf "${C_SPA_DEPLOY_DIR}/*" > /dev/null;
-       cp -vr dist/* "${C_SPA_DEPLOY_DIR}/" > /dev/null;
+       process_step 'SPA. Очистка директории '"${C_SPA_DEPLOY_DIR}/*";
+       cp -r dist/. "${C_SPA_DEPLOY_DIR}/" > /dev/null;
+       process_step 'SPA. Копирование файлов сборки в '"${C_SPA_DEPLOY_DIR}/";
      fi;
   fi;
 }

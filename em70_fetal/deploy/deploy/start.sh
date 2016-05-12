@@ -122,4 +122,6 @@ if [ ${var_apply_migrations} = "true" ]; then
   source "${__dir}/deploy/migration_apply.sh" && applyMigrations;
 fi;
 
+updateGitRevisionFile ;
+
 # ================================END MAIN======================================
